@@ -6,25 +6,52 @@ const Note = mongoose.model('notes');
 const note = {
   addNote: (req, res) => {
     const newNoteContent = {
+      type: req.body.type, // TWITTER, ARTICLE, SIMPLE
       title: req.body.title,
       description: req.body.description,
+      link: req.body.url,
+      thumbnail: req.body.thumbnail,
     };
+
     new Note(newNoteContent)
       .save()
-      .then(idea => console.log('Note saved:', idea))
-      .then(res.send(200));
+      .then(note => {
+        console.log('Note saved:', note);
+        res.sendStatus(200);
+      })
+      .catch((err) => console.log(err));
   },
   getAllNotes: (req, res) => {
-    console.log('get all twitters');
+    Note.find({})
+      .then((results) => res.send(results))
+      .catch((err) => console.log(err));
+  },
+  getAllNotesOfOneType: (req, res) => {
+    Note.find({type: req.params.type})
+      .then((results) => res.send(results))
+      .catch((err) => console.log(err));
   },
   getSingleNote: (req, res) => {
-    console.log('get single twitter');
+    Note.findOne({id: req.params.id})
+      .then((twitter) => res.send(twitter))
+      .catch((err) => console.log(err));
   },
   updateNote: (req, res) => {
-    console.log('update single twitter');
+    const updatedNoteContent = {
+      type: req.body.type, // TWITTER, ARTICLE, SIMPLE
+      title: req.body.title,
+      description: req.body.description,
+      link: req.body.url,
+      thumbnail: req.body.thumbnail,
+    };
+    Note.findByIdAndUpdate(req.params.id, updatedNoteContent)
+      .then((updatedNote) => res.send(updatedNote))
+      .catch((err) => console.log(err));
   },
   deleteNote: (req, res) => {
-    console.log('delete single twitter');
+    Note.findByIdAndDelete(req.params.id)
+      .then(() => res.sendStatus(200))
+      .catch((err) => console.log(err));
   }
 };
 
