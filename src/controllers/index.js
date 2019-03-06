@@ -4,7 +4,7 @@ require('../models/Note');
 const Note = mongoose.model('notes');
 
 const note = {
-  addNote: (req, res) => {
+  addNote: async (req, res) => {
     const newNoteContent = {
       type: req.body.type, // TWITTER, ARTICLE, SIMPLE
       title: req.body.title,
@@ -13,13 +13,14 @@ const note = {
       thumbnail: req.body.thumbnail,
     };
 
-    new Note(newNoteContent)
-      .save()
-      .then(note => {
-        console.log('Note saved:', note);
-        res.sendStatus(200);
-      })
-      .catch((err) => console.log(err));
+    try {
+      const newNote = await new Note(newNoteContent).save();
+      console.log('Note saved:', newNote);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
   },
   getAllNotes: (req, res) => {
     Note.find({})
