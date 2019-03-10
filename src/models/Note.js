@@ -24,6 +24,10 @@ const NoteSchema = new Schema({
   thumbnail: {
     type: String,
     default: null,
+  },
+  userID: {
+    type: String,
+    required: true,
   }
 });
 
