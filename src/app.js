@@ -1,19 +1,18 @@
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').load();
 const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const morgan = require('morgan');
 const LocalStrategy = require('passport-local').Strategy;
 const routes = require('./routes');
-
-dotenv.load();
+const User = require('./models/User');
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(bodyParser.json());
-
-const User = require('./models/User');
+app.use(morgan('combined'));
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
