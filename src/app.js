@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const LocalStrategy = require('passport-local').Strategy;
 const routes = require('./routes');
 const User = require('./models/User');
+
 const PORT = process.env.PORT || 9000;
 
 const app = express();
