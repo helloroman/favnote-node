@@ -7,18 +7,19 @@ const note = {
   addNote: async (req, res) => {
     if (req.isAuthenticated()) {
       const newNoteContent = {
-        type: req.body.type, // TWITTER, ARTICLE, SIMPLE
+        type: req.body.type, // twitters, articles, notes
         title: req.body.title,
-        description: req.body.description,
-        link: req.body.url,
-        thumbnail: req.body.thumbnail,
-        userID: req.body.userID
+        content: req.body.content,
+        articleUrl: req.body.articleUrl,
+        twitterName: req.body.twitterName,
+        userID: req.body.userID,
       };
 
       try {
-        const newNote = await new Note(newNoteContent).save();
+        const newNote = await new Note(newNoteContent).save((err, note) => {
+          res.send(note);
+        });
         console.log('Note saved:', newNote);
-        res.sendStatus(200);
       } catch (err) {
         console.log(err);
         res.sendStatus(500);
@@ -33,22 +34,28 @@ const note = {
       .catch((err) => console.log(err));
   },
   getAllNotesOfOneType: (req, res) => {
-    Note.find({type: req.params.type})
+    Note.find({userID: req.body.userID, type: req.body.type})
       .then((results) => res.send(results))
       .catch((err) => console.log(err));
   },
   getSingleNote: (req, res) => {
-    Note.findOne({id: req.params.id})
-      .then((twitter) => res.send(twitter))
-      .catch((err) => console.log(err));
+    Note.findById(req.params.id)
+      .then((results) => {
+        if (!results) {
+          res.send(404);
+        } else {
+          res.send(results)
+        }
+      })
+      .catch((err) => res.send(404));
   },
   updateNote: (req, res) => {
     const updatedNoteContent = {
-      type: req.body.type, // TWITTER, ARTICLE, SIMPLE
+      type: req.body.type, // twitters, articles, simple
       title: req.body.title,
-      description: req.body.description,
-      link: req.body.url,
-      thumbnail: req.body.thumbnail,
+      content: req.body.content,
+      articleUrl: req.body.articleUrl,
+      twitterName: req.body.twitterName,
     };
     Note.findByIdAndUpdate(req.params.id, updatedNoteContent)
       .then((updatedNote) => res.send(updatedNote))
@@ -56,8 +63,14 @@ const note = {
   },
   deleteNote: (req, res) => {
     Note.findByIdAndDelete(req.params.id)
-      .then(() => res.sendStatus(200))
-      .catch((err) => console.log(err));
+      .then((result) => {
+        if (!result) {
+          res.sendStatus(404)
+        } else {
+          res.sendStatus(200);
+        }
+      })
+      .catch((err) => res.sendStatus(500));
   }
 };
 

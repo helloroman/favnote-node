@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const NOTE_TYPES = ['TWITTER', 'ARTICLE', 'SIMPLE'];
+const NOTE_TYPES = ['twitters', 'articles', 'notes'];
 
 const NoteSchema = new Schema({
   type: {
@@ -13,22 +13,22 @@ const NoteSchema = new Schema({
     type: String,
     required: true,
   },
-  description: {
+  content: {
     type: String,
     required: true,
   },
-  link: {
+  articleUrl: {
     type: String,
     defualt: null,
   },
-  thumbnail: {
+  twitterName: {
     type: String,
     default: null,
   },
   userID: {
     type: String,
     required: true,
-  }
+  },
 });
 
 mongoose.model('notes', NoteSchema);
