@@ -8,7 +8,7 @@ const morgan = require('morgan');
 const LocalStrategy = require('passport-local').Strategy;
 const routes = require('./routes');
 const User = require('./models/User');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,7 +18,11 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use(session({ secret: "cats" }));
+app.use(session({
+  secret: 'roman',
+  resave: false,
+  saveUninitialized: true,
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
