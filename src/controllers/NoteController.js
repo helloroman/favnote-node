@@ -5,7 +5,6 @@ const Note = mongoose.model('notes');
 
 const note = {
   addNote: async (req, res) => {
-    if (req.isAuthenticated()) {
       const newNoteContent = {
         type: req.body.type, // twitters, articles, notes
         title: req.body.title,
@@ -24,17 +23,15 @@ const note = {
         console.log(err);
         res.sendStatus(500);
       }
-    } else {
-      res.sendStatus(403);
-    }
   },
   getAllNotes: (req, res) => {
-    Note.find({userID: req.body.userID})
+    console.log(req);
+    Note.find({userID: req.query.userID})
       .then((results) => res.send(results))
       .catch((err) => console.log(err));
   },
   getAllNotesOfOneType: (req, res) => {
-    Note.find({userID: req.body.userID, type: req.body.type})
+    Note.find({userID: req.query.userID, type: req.query.type})
       .then((results) => res.send(results))
       .catch((err) => console.log(err));
   },

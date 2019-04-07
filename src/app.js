@@ -5,16 +5,18 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const morgan = require('morgan');
+const cors = require('cors');
 const LocalStrategy = require('passport-local').Strategy;
 const routes = require('./routes');
 const User = require('./models/User');
+
 
 const PORT = process.env.PORT || 9000;
 
 const app = express();
 app.use(bodyParser.json());
 app.use(morgan('combined'));
-
+app.use(cors());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
